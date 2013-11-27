@@ -19,9 +19,18 @@ class syntax_plugin_autolink2_show extends DokuWiki_Syntax_Plugin {
     /**
      * What kind of syntax are we?
      */
-    function getType(){return 'substition';}
-    function getPType() {return 'normal';}
+    function getType(){return 'baseonly';}
+    function getPType() {return 'stack';}
     function getSort() {return 999;}
+
+    /**
+     * Get the allowed types, this plugin allows everything
+     *
+     * @return array The allowed types
+     */
+    function getAllowedTypes() {
+        return array('container', 'baseonly', 'formatting', 'substition', 'protected', 'disabled', 'paragraphs');
+    }
 
 	function connectTo($mode) { 
       $this->Lexer->addEntryPattern('<autolink>(?=.*?\x3C/autolink\x3E)',$mode,'plugin_autolink2_show'); 
@@ -31,42 +40,28 @@ class syntax_plugin_autolink2_show extends DokuWiki_Syntax_Plugin {
     }
     
 
-    function handle($match, $state, $pos, &$handler){
-       return array($match, $state);
+    function handle($match, $state, $pos, Doku_Handler &$handler){
+        /** @var helper_plugin_autolink2 $helper */
+        $helper = plugin_load('helper', 'autolink2', false);
+        switch ($state) {
+            case DOKU_LEXER_ENTER:
+                $helper->enterAutolink();
+                break;
+            case DOKU_LEXER_EXIT:
+                $helper->exitAutolink();
+                break;
+            case DOKU_LEXER_UNMATCHED:
+                $handler->_addCall('cdata', array($match), $pos);
+                break;
+        }
+
+       return false;
     }
  
     /**
      * Create output
      */
     function render($mode, &$renderer, $data) {
-        if($mode == 'xhtml'){
-          $renderer->doc .= $this->_renderautolink($renderer, $data[0],$data[1]);
-          return true;
-        }
         return false;
-    }
-    
-    function _renderautolink(&$renderer, $match, $state) {
-//        if (!$this->getConf('autoautolink')) return false;
-
-        switch ($state) {
-        case DOKU_LEXER_ENTER :      
-          return "";
-          break;
-        case DOKU_LEXER_UNMATCHED :
-          if ($my =& plugin_load('helper', 'autolink2')) $anchors = $my->getAnchors();
-          $x=$match;
-          if (is_array($anchors)){
-          $pattern=$anchors[0];
-          $replace=$anchors[1];
-              $replaced = preg_replace($pattern,$replace,$match);
-              $x=p_render('xhtml',p_get_instructions($replaced),$info);
-            return $x;
-          }
-          break;
-        case DOKU_LEXER_EXIT :
-          return "";
-          break;
-        }
     }
 }

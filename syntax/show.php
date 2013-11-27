@@ -8,27 +8,13 @@
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  */
  
-if (!defined('DOKU_INC')) {
-  define('DOKU_INC',realpath(dirname(__FILE__).'/../../').'/');
-}
-if (!defined('DOKU_PLUGIN')) {
-  define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
-}
-require_once(DOKU_PLUGIN.'syntax.php');
- 
- 
+if (!defined('DOKU_INC')) die('');
+
 /**
  * All DokuWiki plugins to extend the parser/rendering mechanism
  * need to inherit from this class
  */
 class syntax_plugin_autolink2_show extends DokuWiki_Syntax_Plugin {
- 
-    /**
-     * return some info
-     */
-    function getInfo() {
-        return confToHash(dirname(__FILE__).'/../plugin.info.txt');
-    }
  
     /**
      * What kind of syntax are we?
@@ -84,4 +70,3 @@ class syntax_plugin_autolink2_show extends DokuWiki_Syntax_Plugin {
         }
     }
 }
-?>

@@ -4,19 +4,10 @@
  *
  * @author Otto Vainio <otto@valjakko.net>
  */
- 
+
 if(!defined('DOKU_INC')) die();
-if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
-require_once(DOKU_PLUGIN.'action.php');
- 
+
 class action_plugin_autolink2 extends DokuWiki_Action_Plugin {
- 
-  /**
-   * return some info
-   */
-    function getInfo() {
-        return confToHash(dirname(__FILE__).'/plugin.info.txt');
-    }
  
   /**
    * Register its handlers with the DokuWiki's event controller
